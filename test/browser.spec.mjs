@@ -8,9 +8,10 @@ test("browser demangles under strict CSP using only local assets", async ({ page
   await page.goto("/test/browser.html");
   const result = await page.evaluate(async () => {
     const { createDemangler } = await import("/dist/browser.js");
-    return (await createDemangler()).demangle("_D8demangle4testZ");
+    return (await createDemangler()).demangleWithText("_D8demangle4testZ");
   });
-  expect(result).toEqual({ status: "success", text: "demangle.test", warnings: [] });
+  expect(result.text).toBe("demangle.test");
+  expect(result.ast.nodes[0].kind).toBe("Symbol");
   expect(requests.filter(url => url.endsWith(".wasm"))).toHaveLength(1);
   expect(requests.every(url => url.startsWith("http://127.0.0.1:4177/"))).toBe(true);
   expect(errors).toEqual([]);
@@ -25,7 +26,7 @@ test("provided bytes demangle offline", async ({ page }) => {
   await page.context().setOffline(true);
   const results = await page.evaluate(async () => {
     const api = await window.createDemangler({ wasmBinary: window.wasmBinary });
-    return [api.demangle("_D8demangle4testZ"), api.demangle("?"), api.demangle("_D8demangle4testZ")];
+    return [api.demangleWithText("_D8demangle4testZ"), api.demangleWithText("?"), api.demangleWithText("_D8demangle4testZ")];
   });
   expect(results[0].text).toBe("demangle.test");
   expect(results[1].status).toBe("invalid");
@@ -40,4 +41,16 @@ test("module workers load and demangle", async ({ page }) => {
     worker.onmessage = event => { resolve(event.data); worker.terminate(); };
   }));
   expect(result.text).toBe("demangle.test");
+});
+
+test("analysis and native text return the same tree in the browser", async ({ page }) => {
+  await page.goto("/test/browser.html");
+  const result = await page.evaluate(async () => {
+    const { createDemangler } = await import("/dist/browser.js");
+    const api = await createDemangler();
+    return { analysis: api.demangle("_D8demangle4testZ"), formatted: api.demangleWithText("_D8demangle4testZ") };
+  });
+  expect(result.analysis.status).toBe("success");
+  expect(result.analysis).not.toHaveProperty("text");
+  expect(result.formatted.ast).toEqual(result.analysis.ast);
 });

@@ -23,12 +23,14 @@ try {
     import { createDemangler } from "llvm-dlang-demangle";
     import { readFile } from "node:fs/promises";
     const asset = import.meta.resolve("llvm-dlang-demangle/llvm-dlang-demangle.wasm");
+    const schema = JSON.parse(await readFile(new URL(import.meta.resolve("llvm-dlang-demangle/ast-schema.json"))));
+    assert.equal(schema.properties.nodes.items.oneOf[0].properties.kind.const, "Symbol");
     const api = await createDemangler();
-    assert.deepEqual(api.demangle("_D8demangle4testZ"),
-      { status: "success", text: "demangle.test", warnings: [] });
-    assert.equal(api.demangle("?").status, "invalid");
+    assert.equal(api.demangleWithText("_D8demangle4testZ").text, "demangle.test");
+    assert.equal(api.demangle("_D8demangle4testZ").ast.nodes[0].kind, "Symbol");
+    assert.equal(api.demangleWithText("?").status, "invalid");
     assert.equal((await createDemangler({ wasmBinary: await readFile(new URL(asset)) }))
-      .demangle("_D8demangle4testZ").text, "demangle.test");
+      .demangleWithText("_D8demangle4testZ").text, "demangle.test");
   `);
   execFileSync(process.execPath, ["smoke.mjs"], { cwd: temporary, stdio: "pipe" });
   assert(pack.files.some(file => file.path === "dist/index.d.ts"));

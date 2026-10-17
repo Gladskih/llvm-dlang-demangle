@@ -1,0 +1,25 @@
+{
+  "Symbol": {},
+  "Main": {},
+  "MangledName": {},
+  "QualifiedName": {},
+  "Identifier": {},
+  "Type": {
+    "code": "string"
+  },
+  "IdentifierValue": {
+    "value": "string",
+    "special?": "string"
+  },
+  "DecimalNumber": {
+    "value": "string"
+  },
+  "BackrefDistance": {
+    "value": "string"
+  },
+  "Backref": {
+    "targetOffset": "string"
+  },
+  "IdentifierBackref": {},
+  "TypeBackref": {}
+}

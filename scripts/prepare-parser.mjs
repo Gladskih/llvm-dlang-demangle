@@ -1,3 +1,5 @@
+import { generateSchema } from "./generate-schema.mjs";
+import { instrumentDlang } from "./instrument-dlang.mjs";
 import assert from "node:assert/strict";
 import { cp, mkdir, readFile, writeFile } from "node:fs/promises";
 
@@ -41,5 +43,6 @@ await mkdir(".build/guarded/llvm/Demangle", { recursive: true });
 await cp(".build/llvm/llvm/include/llvm/Demangle", ".build/guarded/llvm/Demangle", { recursive: true });
 await writeFile(".build/guarded/llvm/Demangle/Utility.h", prepareUtility(await readFile(
   ".build/llvm/llvm/include/llvm/Demangle/Utility.h", "utf8")));
-await writeFile(".build/parser.cpp", prepareOwnership(await readFile(
-  ".build/llvm/llvm/lib/Demangle/DLangDemangle.cpp", "utf8")));
+await generateSchema();
+await writeFile(".build/parser.cpp", instrumentDlang(prepareOwnership(await readFile(
+  ".build/llvm/llvm/lib/Demangle/DLangDemangle.cpp", "utf8"))));
