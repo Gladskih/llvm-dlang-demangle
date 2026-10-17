@@ -75,7 +75,7 @@ Exports include `llvm-dlang-demangle/ast-schema.json` and
 `llvm-dlang-demangle/build-info.json`. Wrapper code is MIT; LLVM and runtime
 notices are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-References: [pinned LLVM parser](https://github.com/llvm/llvm-project/blob/0d261d1ca552c95a8f007e061c787ac7132fbcbc/llvm/lib/Demangle/DLangDemangle.cpp),
+References: [LLVM parser](https://github.com/llvm/llvm-project/blob/main/llvm/lib/Demangle/DLangDemangle.cpp),
 [D ABI](https://dlang.org/spec/abi.html#name_mangling).
 
 Release automation lives in `.github/workflows/publish.yml`. A `v<package-version>`
