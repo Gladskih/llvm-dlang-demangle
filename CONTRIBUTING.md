@@ -2,7 +2,7 @@
 
 Follow the pinned LLVM implementation and tests. Parsing and execution stay local in
 the browser; consumers have no dependencies. Never reconstruct an AST from printed text.
-These LLVM parsers produce text directly and expose no AST. Rust supports v0 only.
+These LLVM parsers produce text directly and expose no AST. D support is the subset implemented upstream.
 Keep upstream behavior, including its documented recursion limit; add no wrapper policy caps.
 
 Use small cohesive modules, double quotes, const by default, descriptive names, functions

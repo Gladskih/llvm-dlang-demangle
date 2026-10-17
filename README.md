@@ -33,7 +33,9 @@ WASM file; browsers fetch that asset from your own application. CSP needs
 Only well-formed Unicode strings without control characters are accepted.
 The wrapper has no input/output size policy caps. Actual WASM memory/stack limits
 still apply. LLVM's D demangler supports the subset exercised by its pinned tests; this is
-not a claim of complete support for the D ABI. Deep recursion can exhaust the WASM stack.
+not a claim of complete support for the D ABI. Function signatures, templates, type
+qualifiers, compound types, delegates and tuples have TODO implementations upstream.
+For example, `_D3foo3barFiZi` returns `invalid`. Deep recursion can exhaust the WASM stack.
 
 Sources, SHA-256 hashes and Emscripten version are pinned in `upstream.json`.
 See [CONTRIBUTING.md](CONTRIBUTING.md) for build and verification commands.
@@ -44,3 +46,5 @@ source changes, safety adaptations, corpora and all gates before accepting an up
 
 Build metadata is exported as `llvm-dlang-demangle/build-info.json`.
 Wrapper: MIT. LLVM and linked runtime notices: see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+Upstream implementation: [LLVM source](https://github.com/llvm/llvm-project/blob/0d261d1ca552c95a8f007e061c787ac7132fbcbc/llvm/lib/Demangle/DLangDemangle.cpp).
