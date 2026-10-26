@@ -1,3 +1,4 @@
+import { pathToFileURL } from "node:url";
 import { generateSchema } from "./generate-schema.mjs";
 import { instrumentDlang } from "./instrument-dlang.mjs";
 import assert from "node:assert/strict";
@@ -39,10 +40,13 @@ export function prepareOwnership(source) {
     "(value >= 'A' && value <= 'Z'); }\n" + source;
 }
 
-await mkdir(".build/guarded/llvm/Demangle", { recursive: true });
-await cp(".build/llvm/llvm/include/llvm/Demangle", ".build/guarded/llvm/Demangle", { recursive: true });
-await writeFile(".build/guarded/llvm/Demangle/Utility.h", prepareUtility(await readFile(
-  ".build/llvm/llvm/include/llvm/Demangle/Utility.h", "utf8")));
-await generateSchema();
-await writeFile(".build/parser.cpp", instrumentDlang(prepareOwnership(await readFile(
-  ".build/llvm/llvm/lib/Demangle/DLangDemangle.cpp", "utf8"))));
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  await mkdir(".build/guarded/llvm/Demangle", { recursive: true });
+  await cp(".build/llvm/llvm/include/llvm/Demangle", ".build/guarded/llvm/Demangle",
+    { recursive: true });
+  await writeFile(".build/guarded/llvm/Demangle/Utility.h", prepareUtility(await readFile(
+    ".build/llvm/llvm/include/llvm/Demangle/Utility.h", "utf8")));
+  await generateSchema();
+  await writeFile(".build/parser.cpp", instrumentDlang(prepareOwnership(await readFile(
+    ".build/llvm/llvm/lib/Demangle/DLangDemangle.cpp", "utf8"))));
+}
